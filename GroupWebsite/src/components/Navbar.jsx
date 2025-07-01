@@ -6,7 +6,6 @@ function Navbar() {
       <Link to="/dashboard">Dashboard</Link>
       <Link to="/workout">Workout</Link>
       <Link to="/leaderboard">Leaderboard</Link>
-      <Link to="/challenges">Challenges</Link>
       <Link to="/progress">Progress</Link>
       <Link to="/login">Login</Link>
       <Link to="/register">Register</Link>
