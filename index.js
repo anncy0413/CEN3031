@@ -14,15 +14,14 @@ const PORT = 3000;
 
 // Middleware to parse JSON requests
 app.use(express.json());
-app.use('/users', userRoutes);
-// Connect to MongoDB
-connectDB();
-
-// Register routes
 app.use('/water', waterRoutes);
 app.use('/weights', weightRoutes);
 app.use('/sleep', sleepRoutes);
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+// Connect to MongoDB
+connectDB();
+
 
 
 
