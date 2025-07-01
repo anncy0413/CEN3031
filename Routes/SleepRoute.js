@@ -33,6 +33,43 @@ router.get('/sleepLogs', authenticate, async (req, res) => {
   }
 });
 
+router.patch('/:id', authenticate, async (req, res) => {
+  try {
+    const updatedLog = await SleepLog.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.userId },
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedLog) {
+      return res.status(404).json({ error: 'Log not found or not yours' });
+    }
+
+    res.json(updatedLog);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update sleep log' });
+  }
+});
+
+// DELETE /sleep/:id - Delete a sleep log
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    const deleted = await SleepLog.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Log not found or not yours' });
+    }
+
+    res.json({ message: 'Sleep log deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete sleep log' });
+  }
+});
+
+
 module.exports = router;
 
 

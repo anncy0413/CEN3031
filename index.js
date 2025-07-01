@@ -2,7 +2,7 @@ const express = require('express');
 const connectDB = require('./db');
 
 // Import routes
-const waterRoutes = require('./Routes/WaterRoute');
+const cardioRoutes = require('./Routes/CardioRoute');
 const weightRoutes = require('./Routes/WeightRoute');
 const sleepRoutes = require('./Routes/SleepRoute');
 const authRoutes = require('./Routes/AuthRoute');
@@ -14,15 +14,14 @@ const PORT = 3000;
 
 // Middleware to parse JSON requests
 app.use(express.json());
+app.use('/cardio', cardioRoutes);
+app.use('/weights', weightRoutes);
+app.use('/sleep', sleepRoutes);
+app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 // Connect to MongoDB
 connectDB();
 
-// Register routes
-app.use('/water', waterRoutes);
-app.use('/weights', weightRoutes);
-app.use('/sleep', sleepRoutes);
-app.use('/auth', authRoutes);
 
 
 
