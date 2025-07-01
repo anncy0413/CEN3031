@@ -6,6 +6,7 @@ const waterRoutes = require('./Routes/WaterRoute');
 const weightRoutes = require('./Routes/WeightRoute');
 const sleepRoutes = require('./Routes/SleepRoute');
 const authRoutes = require('./Routes/AuthRoute');
+const userRoutes = require('./Routes/UserRoute');
 
 
 const app = express();
@@ -13,7 +14,7 @@ const PORT = 3000;
 
 // Middleware to parse JSON requests
 app.use(express.json());
-
+app.use('/users', userRoutes);
 // Connect to MongoDB
 connectDB();
 
