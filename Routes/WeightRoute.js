@@ -34,6 +34,44 @@ router.get('/weightLogs', authenticate, async (req, res) => {
   }
 });
 
+// PATCH /weights/:id - Update a specific weight log
+router.patch('/:id', authenticate, async (req, res) => {
+  try {
+    const updatedLog = await WeightLog.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.userId },
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedLog) {
+      return res.status(404).json({ error: 'Log not found or not yours' });
+    }
+
+    res.json(updatedLog);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update log' });
+  }
+});
+
+// DELETE /weights/:id - Delete a specific weight log
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    const deleted = await WeightLog.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Log not found or not yours' });
+    }
+
+    res.json({ message: 'Log deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete log' });
+  }
+});
+
+
 module.exports = router;
 
 
