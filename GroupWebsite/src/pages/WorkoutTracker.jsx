@@ -39,6 +39,15 @@ function WorkoutTracker() {
             required
             className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+            <input
+            type="number"
+            name="Weight"
+            placeholder="Weight (lbs)"
+            value={form.weight}
+            onChange={handleChange}
+            required
+            className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
           <button
             type="submit"
             className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition font-semibold shadow"
