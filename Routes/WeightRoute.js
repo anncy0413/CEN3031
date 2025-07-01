@@ -3,6 +3,7 @@ const router = express.Router();
 const WeightLog = require('../Models/WeightLog');
 const authenticate = require('../Middleware/AuthMiddleware');
 
+// POST: Add a new weight log
 router.post('/logWeight', authenticate, async (req, res) => {
   try {
     const { exercise, sets, reps, weight } = req.body;
@@ -12,7 +13,7 @@ router.post('/logWeight', authenticate, async (req, res) => {
       sets,
       reps,
       weight,
-      user: req.user
+      user: req.user.userId  // ✅ correct usage
     });
 
     await log.save();
@@ -22,15 +23,18 @@ router.post('/logWeight', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to log workout' });
   }
 });
+
+// GET: Fetch all logs for this user
 router.get('/weightLogs', authenticate, async (req, res) => {
   try {
-    const logs = await WeightLog.find({ user: req.user }).sort({ date: -1 });
+    const logs = await WeightLog.find({ user: req.user.userId }).sort({ date: -1 });
     res.json(logs);
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve weight logs' });
   }
-})
+});
 
 module.exports = router;
+
 
 
