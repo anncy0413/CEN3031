@@ -27,7 +27,7 @@ function RegisterPage() {
       return;
     }
 
-    //database section ==================================
+//==================================================================
 
     try{
     let result = await fetch(
@@ -43,11 +43,16 @@ function RegisterPage() {
     result = await result.json();
     console.warn(result);
     if(result){
-      alert("Data saved successfully");
-      setEmail("");
-      setUsername("");
-      setPassword("");
-      setMessage('Registration Successful');
+      if(result.message != "Something went wrong?"){
+        alert("Data saved successfully");
+        setEmail("");
+        setUsername("");
+        setPassword("");
+        setMessage('Registration Successful');
+      }
+      else{
+        setMessage('Duplicate email and/or username');
+      }
     }
     else{
       setMessage('Registration failed');
@@ -56,18 +61,6 @@ function RegisterPage() {
     }
   
     //===================================================
-
-    // try {
-    //   const res = await axios.post('http://localhost:5000/api/auth/register', {
-    //     username: form.username,
-    //     email: form.email,
-    //     password: form.password,
-    //   });
-    //   setMessage(`✅ ${res.data.message || 'Registration successful!'}`);
-    //   setForm({ username: '', email: '', password: '', confirmPassword: '' });
-    // } catch (err) {
-    //   setMessage(`❌ ${err.response?.data?.message || 'Registration failed'}`);
-    // }
 
   };
 

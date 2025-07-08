@@ -10,6 +10,8 @@ function LoginPage() {
     username: '',
     code: ''
   });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -30,15 +32,40 @@ function LoginPage() {
         setMessage('✅ Admin login successful!');
         localStorage.setItem('token', res.data.token);
         navigate('/dashboard');
+
+        //normal login
       } else {
-        const res = await axios.post('http://localhost:5000/api/auth/login', {
-          email: form.email,
-          password: form.password,
-        });
-        setMessage('✅ User login successful!');
-        localStorage.setItem('token', res.data.token);
-        navigate('/dashboard');
+        try{let result = await fetch(
+          'http://localhost:5000/login',{
+          method: "post",
+          body: JSON.stringify({email, password}),
+          headers: {
+            'Content-Type':'application/json'
+          }
+        }
+      )
+      result = await result.json();
+      console.warn(result);
+      if(result){
+        if(result.error == "User doesn't exist"){
+          setMessage('User doesn\'t exist.');
+        }
+        else if(result.error == "Password doesn't match"){
+          setMessage('Incorrect password')
+        }
+        else{
+          alert("Logged in successfully");
+          setEmail("");
+          setPassword("");
+          setMessage('Logged in');
+        }
+        
       }
+      else{
+        setMessage('Not logged in');
+    }} catch (err) {
+      setMessage('Login failed')
+    }}
     } catch (err) {
       setMessage(`❌ ${err.response?.data?.message || 'Login failed'}`);
     }
@@ -108,8 +135,10 @@ function LoginPage() {
                 type="email"
                 name="email"
                 placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
+                // value={form.email}
+                // onChange={handleChange}
+                value = {email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <input
@@ -117,8 +146,10 @@ function LoginPage() {
                 type="password"
                 name="password"
                 placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
+                // value={form.password}
+                // onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </>

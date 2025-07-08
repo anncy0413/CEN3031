@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
   res.send('Xpump backend is running!');
 });
 
-// API to register a user====================
+//register ====================
 app.post("/register", async (req, resp) => {
     try {
         const User = require('./Models/Users.js');
@@ -50,7 +50,34 @@ app.post("/register", async (req, resp) => {
         resp.status(500).send({ message: "Something went wrong?", error: e.message });
     }
 });
-//my section end===============================
+
+//login ===========================
+
+app.post("/login", async (req, resp) =>{
+    try{
+        const User = require('./Models/Users.js');
+        const user = await User.findOne({email: req.body.email});
+        if (user) {
+            const result = req.body.password === user.password;
+            if (result) {
+                console.log("Account exists");
+                console.log(req.body.email);
+                console.log(req.body.password);
+            }
+            else {
+                resp.status(400).json({error: "Password doesn't match"});
+            }
+        }
+        else{
+            resp.status(400).json({ error: "User doesn't exist" });
+        }
+    }
+    catch(e){
+        resp.status(400).json({ message: "Something went wrong", error: e.message });
+    }
+});
+
+//my section end===================
 
 // Start the server
 app.listen(PORT, () => {
