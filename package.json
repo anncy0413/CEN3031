@@ -1,25 +1,19 @@
 {
-  "name": "cen3031",
+  "name": "xpump-backend",
   "version": "1.0.0",
-  "description": "Group Project for Introduction to Software Engineering",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/anncy0413/CEN3031.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/anncy0413/CEN3031/issues"
-  },
-  "homepage": "https://github.com/anncy0413/CEN3031#readme",
+  "description": "",
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "recharts": "^3.0.2"
+    "bcryptjs": "^3.0.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^5.9.2",
+    "mongoose": "^8.16.1"
   }
 }
