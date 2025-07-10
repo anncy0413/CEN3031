@@ -2,9 +2,7 @@ import React from 'react';
 
 function Leaderboard() {
   const dummyData = [
-    { name: 'Alice', points: 150 },
-    { name: 'Bob', points: 120 },
-    { name: 'Charlie', points: 100 },
+   
   ];
 
   return (
