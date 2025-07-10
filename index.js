@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./db');
 const mongoose = require("mongoose");
+const bcrypt = require('bcryptjs');
 
 const cors = require("cors");
 
@@ -35,8 +36,11 @@ app.get('/', (req, res) => {
 //register ====================
 app.post("/register", async (req, resp) => {
     try {
+        const {username, email, password} = req.body;
         const User = require('./Models/Users.js');
-        const user = new User(req.body);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({username, email, password: hashedPassword});
+        console.log(hashedPassword);
         let result = await user.save();
         if (result) {
             delete result.password; // Ensure you're not sending sensitive info
@@ -56,11 +60,13 @@ app.post("/register", async (req, resp) => {
 app.post("/login", async (req, resp) =>{
     try{
         const User = require('./Models/Users.js');
-        const user = await User.findOne({email: req.body.email});
+        const {email, password} = req.body;
+        const user = await User.findOne({email});
         if (user) {
-            const result = req.body.password === user.password;
+            const result = await bcrypt.compare(password, user.password);
             if (result) {
                 console.log("Account exists");
+                console.log(user.username);
                 console.log(req.body.email);
                 console.log(req.body.password);
             }

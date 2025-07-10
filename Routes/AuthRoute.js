@@ -6,6 +6,9 @@ const User = require('../Models/Users');
 const router = express.Router();
 const JWT_SECRET = 'yourSecretKey'; // 🔐 use environment variable in production
 
+//moved register and login functions to index.js
+//should work the same
+
 // Register
 // router.post('/register', async (req, res) => {
 //   const { username, email, password } = req.body;
