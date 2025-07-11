@@ -15,7 +15,7 @@ function ShoulderPage(){
             </section>
 
             <section className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Deltoid Exercises</h2>
+                <h2 className="text-2xl font-semibold mb-4">Cpre Exercises</h2>
                     <div className="grid md:grid-cols-3 gap-4">
 
                     <div className="bg-white shadow rounded-lg p-4">
