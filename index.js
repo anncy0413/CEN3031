@@ -14,10 +14,12 @@ const userRoutes = require('./Routes/UserRoute');
 
 
 const app = express();
-const PORT = 5000;
+const PORT = 5050;
 
 // Middleware to parse JSON requests
 app.use(express.json());
+app.use(cors());
+
 app.use('/cardio', cardioRoutes);
 app.use('/weights', weightRoutes);
 app.use('/sleep', sleepRoutes);
@@ -26,7 +28,7 @@ app.use('/users', userRoutes);
 // Connect to MongoDB
 connectDB();
 
-app.use(cors({origin: 'http://localhost:3000'}))
+//app.use(cors({origin: 'http://localhost:3000'}))
 
 // Root route
 app.get('/', (req, res) => {
@@ -57,31 +59,33 @@ app.post("/register", async (req, resp) => {
 
 //login ===========================
 
-app.post("/login", async (req, resp) =>{
-    try{
+app.post("/login", async (req, resp) => {
+    try {
         const User = require('./Models/Users.js');
-        const {email, password} = req.body;
-        const user = await User.findOne({email});
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
         if (user) {
             const result = await bcrypt.compare(password, user.password);
             if (result) {
-                console.log("Account exists");
-                console.log(user.username);
-                console.log(req.body.email);
-                console.log(req.body.password);
+                console.log("Account exists:", user.username);
+
+                resp.status(200).json({
+                    message: "Login successful",
+                    username: user.username,
+                    email: user.email
+                });
+            } else {
+                resp.status(400).json({ error: "Password doesn't match" });
             }
-            else {
-                resp.status(400).json({error: "Password doesn't match"});
-            }
-        }
-        else{
+        } else {
             resp.status(400).json({ error: "User doesn't exist" });
         }
-    }
-    catch(e){
-        resp.status(400).json({ message: "Something went wrong", error: e.message });
+    } catch (e) {
+        resp.status(500).json({ message: "Something went wrong", error: e.message });
     }
 });
+
 
 //my section end===================
 

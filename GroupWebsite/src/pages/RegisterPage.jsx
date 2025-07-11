@@ -31,7 +31,7 @@ function RegisterPage() {
 
     try{
     let result = await fetch(
-      'http://localhost:5000/register',{ //http://localhost:5000/api/auth/register
+      'http://localhost:5050/register',{ //http://localhost:5050/api/auth/register
         method: "post",
         body: JSON.stringify({username, email, password}),
         headers: {
