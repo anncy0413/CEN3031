@@ -1,23 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const Cardio = require('../Models/Cardio');
+const User = require('../Models/Users');
 const authenticate = require('../Middleware/AuthMiddleware');
 
-// POST: Log a new cardio session
+// POST: Log a new cardio session and update user points
 router.post('/logCardio', authenticate, async (req, res) => {
   try {
     const { distance, time, intensity } = req.body;
 
-    const cardio = new Cardio({
-      distance,
-      time,
-      intensity,
-      user: req.user.userId
-    });
-
+    const cardio = new Cardio({ distance, time, intensity, user: req.user.userId });
     await cardio.save();
-    res.status(201).json({ message: 'Cardio session logged!', cardio });
+
+    const user = await User.findById(req.user.userId);
+    if (user) {
+      user.points += time; // 1 point per minute cardio
+      user.workoutHistory.push({ type: 'cardio', duration: time, distance, intensity, date: new Date() });
+      await user.save();
+    }
+
+    res.status(201).json({ message: 'Cardio session logged and points updated!', cardio, newPoints: user.points });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to log cardio session' });
   }
 });

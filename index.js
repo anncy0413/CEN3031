@@ -2,6 +2,11 @@ const express = require('express');
 const connectDB = require('./db');
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
+const authenticate = require('./Middleware/AuthMiddleware');
+const JWT_SECRET = 'yourSecretKey';
+const jwt = require('jsonwebtoken');
+
+
 
 const cors = require("cors");
 
@@ -11,7 +16,9 @@ const weightRoutes = require('./Routes/WeightRoute');
 const sleepRoutes = require('./Routes/SleepRoute');
 const authRoutes = require('./Routes/AuthRoute');
 const userRoutes = require('./Routes/UserRoute');
-
+const Cardio = require('./Models/Cardio');
+const WeightLog = require('./Models/WeightLog');
+const User = require('./Models/Users');
 
 const app = express();
 const PORT = 5050;
@@ -70,10 +77,16 @@ app.post("/login", async (req, resp) => {
             if (result) {
                 console.log("Account exists:", user.username);
 
+                const payload = { userId: user._id };
+                const JWT_SECRET = 'yourSecretKey'; // ✅ Ensure this matches in AuthMiddleware.js
+
+                const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '2h' }); // ✅ Generate token with secret
+
                 resp.status(200).json({
                     message: "Login successful",
                     username: user.username,
-                    email: user.email
+                    email: user.email, // ✅ Added missing comma
+                    token: token // ✅ Now correctly defined
                 });
             } else {
                 resp.status(400).json({ error: "Password doesn't match" });
@@ -87,7 +100,54 @@ app.post("/login", async (req, resp) => {
 });
 
 
+
 //my section end===================
+// POST /cardio
+app.post('/cardio', authenticate, async (req, res) => {
+    try {
+        const { distance, time, intensity } = req.body;
+
+        const cardioEntry = new Cardio({ user: req.user.userId, distance, time, intensity });
+        await cardioEntry.save();
+
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const pointsEarned = time; // 1 point per minute cardio
+        user.points += pointsEarned;
+        user.workoutHistory.push({ type: 'cardio', duration: time, distance, intensity, date: new Date() });
+        await user.save();
+
+        res.json({ message: 'Cardio logged and points updated', newPoints: user.points });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// POST /weightlifting
+app.post('/weightlifting', authenticate, async (req, res) => {
+    try {
+        const { exercise, sets, reps, weight } = req.body;
+
+        const weightEntry = new WeightLog({ user: req.user.userId, exercise, sets, reps, weight });
+        await weightEntry.save();
+
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const pointsEarned = sets * reps * weight * 0.1;
+        user.points += pointsEarned;
+        user.workoutHistory.push({ type: 'weightlifting', exercise, sets, reps, weight, date: new Date() });
+        await user.save();
+
+        res.json({ message: 'Weightlifting logged and points updated', newPoints: user.points });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Start the server
 app.listen(PORT, () => {

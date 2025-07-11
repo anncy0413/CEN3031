@@ -49,6 +49,7 @@ function LoginPage() {
         const data = await res.json();
 
         if (res.ok) {
+            localStorage.setItem('token', data.token);
           setMessage('✅ User login successful!');
           setEmail('');
           setPassword('');

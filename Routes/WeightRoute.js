@@ -1,25 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const WeightLog = require('../Models/WeightLog');
+const User = require('../Models/Users');
 const authenticate = require('../Middleware/AuthMiddleware');
 
-// POST: Add a new weight log
+// POST: Add a new weight log and update user points
 router.post('/logWeight', authenticate, async (req, res) => {
   try {
     const { exercise, sets, reps, weight } = req.body;
 
-    const log = new WeightLog({
-      exercise,
-      sets,
-      reps,
-      weight,
-      user: req.user.userId  // ✅ correct usage
-    });
-
+    const log = new WeightLog({ exercise, sets, reps, weight, user: req.user.userId });
     await log.save();
-    res.json({ message: 'Weight lifting log saved!', log });
+
+    const user = await User.findById(req.user.userId);
+    if (user) {
+      const pointsEarned = sets * reps * weight * 0.1;
+      user.points += pointsEarned;
+      user.workoutHistory.push({ type: 'weightlifting', exercise, sets, reps, weight, date: new Date() });
+      await user.save();
+    }
+
+    res.json({ message: 'Weight lifting log saved and points updated!', log, newPoints: user.points });
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({ error: 'Failed to log workout' });
   }
 });
@@ -71,8 +74,4 @@ router.delete('/:id', authenticate, async (req, res) => {
   }
 });
 
-
 module.exports = router;
-
-
-

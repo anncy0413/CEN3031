@@ -1,23 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import { Plus } from 'lucide-react';
 
-
-function WorkoutTracker(){
+function WorkoutTracker() {
   const [workouts, setWorkouts] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
-
-  // const [form, setForm] = useState({ type: '', duration: '' });
-
-  // const handleChange = (e) => {
-  //   setForm({ ...form, [e.target.name]: e.target.value });
-  // };
-
-  // const handleAddWorkout = (e) => {
-  //   e.preventDefault();
-  //   setWorkouts([...workouts, { ...form, id: Date.now() }]);
-  //   setForm({ type: '', duration: '' });
-  // };
   const [duration, setDuration] = useState('');
   const [exercises, setExercises] = useState([{ name: '', sets: '', reps: '', weight: '' }]);
 
@@ -33,30 +19,77 @@ function WorkoutTracker(){
     setExercises(updated);
   };
 
-  const handleCardioSubmit = (e) => {
-  e.preventDefault();
-  const newWorkout = {
-    id: Date.now(),
-    type: 'Cardio',
-    duration
-  };
-  setWorkouts([...workouts, newWorkout]);
-  setDuration('');
-};
+  const handleCardioSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
 
-const handleWeightliftingSubmit = (e) => {
-  e.preventDefault();
-  const newWorkout = {
-    id: Date.now(),
-    type: 'Weightlifting',
-    exercises: [...exercises]
+    try {
+    const token = localStorage.getItem('token');
+      const response = await fetch("http://localhost:5050/cardio", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          distance: 0,
+          time: Number(duration),
+          intensity: "Medium"
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(`✅ Cardio uploaded! Points: ${data.newPoints}`);
+        const newWorkout = { id: Date.now(), type: 'Cardio', duration };
+        setWorkouts([...workouts, newWorkout]);
+        setDuration('');
+      } else {
+        alert(data.error || "Upload failed");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Upload error");
+    }
   };
-  setWorkouts([...workouts, newWorkout]);
-  setExercises([{ name: '', sets: '', reps: '', weight: '' }]);
-};
+
+  const handleWeightliftingSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+
+    try {
+    const token = localStorage.getItem('token');
+      for (const ex of exercises) {
+        const response = await fetch("http://localhost:5050/weightlifting", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            exercise: ex.name,
+            sets: Number(ex.sets),
+            reps: Number(ex.reps),
+            weight: Number(ex.weight)
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          alert(data.error || `Upload failed for ${ex.name}`);
+          return;
+        }
+      }
+      alert("✅ Weightlifting workouts uploaded!");
+      const newWorkout = { id: Date.now(), type: 'Weightlifting', exercises: [...exercises] };
+      setWorkouts([...workouts, newWorkout]);
+      setExercises([{ name: '', sets: '', reps: '', weight: '' }]);
+    } catch (error) {
+      console.error(error);
+      alert("Upload error");
+    }
+  };
 
   return (
-    <>
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-3xl mb-6">
         <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">Generate Your Workout</h2>
@@ -64,23 +97,19 @@ const handleWeightliftingSubmit = (e) => {
           <button
             type="button"
             onClick={() => setSelectedType('Cardio')}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              selectedType === 'Cardio' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}
+            className={`px-4 py-2 rounded-lg font-semibold ${selectedType === 'Cardio' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             Cardio
           </button>
           <button
             type="button"
             onClick={() => setSelectedType('Weightlifting')}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              selectedType === 'Weightlifting' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}
+            className={`px-4 py-2 rounded-lg font-semibold ${selectedType === 'Weightlifting' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             Weightlifting
           </button>
         </div>
-          
+
         {selectedType === 'Cardio' && (
           <form onSubmit={handleCardioSubmit} className="flex flex-col gap-4">
             <input
@@ -101,7 +130,6 @@ const handleWeightliftingSubmit = (e) => {
           <form onSubmit={handleWeightliftingSubmit} className="flex flex-col gap-4">
             {exercises.map((exercise, index) => (
               <div key={index} className="border p-4 rounded-lg bg-gray-50 space-y-2">
-
                 <input
                   type="text"
                   placeholder="Exercise (e.g. Barbell Squats)"
@@ -134,7 +162,6 @@ const handleWeightliftingSubmit = (e) => {
                 </div>
               </div>
             ))}
-            
             <button
               type="button"
               onClick={handleAddExercise}
@@ -146,55 +173,34 @@ const handleWeightliftingSubmit = (e) => {
               Submit Weightlifting Workout
             </button>
           </form>
-            )}
+        )}
+
         {workouts.length > 0 && (
-        <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2 text-gray-800">Workout Added!</h3>
-        <ul className="space-y-2">
-        {workouts.map((w) => (
-          <li key={w.id} className="bg-gray-100 rounded-lg p-3 shadow-sm">
-            <span className="font-semibold text-blue-600">{w.type}</span>
-            {w.type === 'Cardio' ? (
-              <> - {w.duration} min</>
-            ) : (
-              <ul className="mt-2 space-y-1 pl-4 list-disc">
-              {w.exercises.map((ex, i) => (
-                <li key={i}>
-                  {ex.name} — {ex.sets} sets × {ex.reps} reps @ {ex.weight} lbs
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">Workout Added!</h3>
+            <ul className="space-y-2">
+              {workouts.map((w) => (
+                <li key={w.id} className="bg-gray-100 rounded-lg p-3 shadow-sm">
+                  <span className="font-semibold text-blue-600">{w.type}</span>
+                  {w.type === 'Cardio' ? (
+                    <> - {w.duration} min</>
+                  ) : (
+                    <ul className="mt-2 space-y-1 pl-4 list-disc">
+                      {w.exercises.map((ex, i) => (
+                        <li key={i}>
+                          {ex.name} — {ex.sets} sets × {ex.reps} reps @ {ex.weight} lbs
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
-          )}
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-
+          </div>
+        )}
       </div>
-      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6"> 
-      <div className="bg-white shadow-lg rounded-2xl p-5">
-        <h4 className="font-semibold text-lg text-blue-700 mb-2">
-            Full Body Circuit
-        </h4> 
-        <p className="text-gray-700 text-sm"> A balanced full-body workout including squats, push-ups, and jumping jacks for a complete session. </p>
-        <p className="text-gray-500 text-xs mt-1">Ideal for: Quick sessions, Home workout, Conditioning</p> 
-      </div> 
-      <div className="bg-white shadow-lg rounded-2xl p-5"> 
-        <h4 className="font-semibold text-lg text-blue-700 mb-2">
-          Cardio Blast
-        </h4> 
-        <p className="text-gray-700 text-sm"> Includes running, cycling, or jump rope to elevate heart rate and burn calories efficiently. </p> <p className="text-gray-500 text-xs mt-1">Ideal for: Cardio lovers, Weight loss, Endurance training</p> 
-      </div> 
-      <div className="bg-white shadow-lg rounded-2xl p-5"> 
-        <h4 className="font-semibold text-lg text-blue-700 mb-2">Strength Focus</h4>
-          <p className="text-gray-700 text-sm"> Weightlifting plan with compound movements like deadlifts, bench press, and rows to build muscle strength. </p>
-          <p className="text-gray-500 text-xs mt-1">Ideal for: Strength training, Muscle building, Gym sessions</p>
-      </div> 
     </div>
-    </div>
-    </>
   );
-};
+}
+
 export default WorkoutTracker;
