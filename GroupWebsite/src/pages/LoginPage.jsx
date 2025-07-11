@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 
 function LoginPage() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -132,6 +134,12 @@ function LoginPage() {
           {message && (
             <p className="text-center text-sm mt-2">{message}</p>
           )}
+          <p className="text-center text-sm mt-4 text-gray-600">
+            Need to sign up?{' '}
+            <Link to="/register" className="text-blue-600 hover:underline">
+              Register here.
+            </Link>
+          </p>
         </form>
       </div>
     </div>
