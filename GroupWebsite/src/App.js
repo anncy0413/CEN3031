@@ -11,6 +11,12 @@ import ChestPage from './pages/ChestPage';
 import BicepsPage from './pages/BicepsPage';
 import AbdominalsPage from './pages/AbdominalsPage';
 import BackPage from './pages/BackPage';
+import CalvesPage from './pages/CalvesPage';
+import GlutesPage from './pages/GlutesPage';
+import HamstringsPage from './pages/HamstringsPage';
+import TricepsPage from './pages/TricepsPage';
+import QuadsPage from './pages/QuadsPage';
+import ShoulderPage from './pages/ShouldersPage';
 
 function App() {
   return (
@@ -28,6 +34,12 @@ function App() {
         <Route path="/biceps" element={<BicepsPage />} />
         <Route path="/abdominals" element={<AbdominalsPage />} />
         <Route path="/back" element={<BackPage />} />
+        <Route path="/calves" element={<CalvesPage />} />
+        <Route path="/glutes" element={<GlutesPage />} />
+        <Route path="/hamstrings" element={<HamstringsPage />} />
+        <Route path="/triceps" element={<TricepsPage />} />
+        <Route path="/quads and adductors" element={<QuadsPage />} />
+        <Route path="/shoulders" element={<ShoulderPage />} />
       </Routes>
     </>
   );
