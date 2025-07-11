@@ -6,7 +6,7 @@ function QuadsPage(){
 
             <section className="mb-6">
                 <h2 className="text-2xl font-semibold mb-2">Why Train Your Quads?</h2>
-                <p className="text-gray-700 leading-relaxed">Training your calves enhances your athletic performance, improves stability, and prevents injuries. Your calves are important for everday acitivies, such as walking, running, and jumping. By improving your calf strength, you reduce the risk of injury by improving stability and ankle strength. Training calves also enhances lower body aesthetics.</p>
+                <p className="text-gray-700 leading-relaxed">Training your quads improves your athletic performance and stabilizes your knee. We use our quads in movements, such as standing, walking, running, and climbing stairs, so training them should be a priority.</p>
             </section>
 
             <section className="mb-6">
@@ -15,7 +15,7 @@ function QuadsPage(){
             </section>
 
             <section className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Quad Exercises</h2>
+                <h2 className="text-2xl font-semibold mb-4">Core Exercises</h2>
                     <div className="grid md:grid-cols-3 gap-4">
                     <div className="bg-white shadow rounded-lg p-4">
                         <h3 className="font-bold mb-1">Squat</h3>
@@ -34,7 +34,7 @@ function QuadsPage(){
 
             <section className="mb-6">
                 <h2 className="text-2xl font-semibold mb-2">Post-Workout Stretch</h2>
-                <p className="text-gray-700 leading-relaxed">To stretch your quads, sit on the floor with your shins and feet on the ground. Use your body weight to sit on your shins. The further back you go, the more you'll stretch your quads.</p>
+                <p className="text-gray-700 leading-relaxed">To stretch your quads, kneel on the floor with your shins and feet on the ground. Use your body weight to sit on your shins. The further back you go, the more you'll stretch your quads.</p>
             </section>
 
             <p className="text-sm text-gray-500 text-center">Tip: Training your adductors is essential for builiding a balanced physique with strong legs.</p>

@@ -15,7 +15,7 @@ function CalvesPage(){
             </section>
 
             <section className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Calf Exercises</h2>
+                <h2 className="text-2xl font-semibold mb-4">Core Exercises</h2>
                     <div className="grid md:grid-cols-3 gap-4">
 
                     <div className="bg-white shadow rounded-lg p-4">
@@ -24,7 +24,11 @@ function CalvesPage(){
                     </div>
                     <div className="bg-white shadow rounded-lg p-4">
                         <h3 className="font-bold mb-1">Seated Calf Raises</h3>
-                        <p className="text-gray-600 text-sm">3 sets of 20 reps. Engage your core, keep elbows at a 45° angle, and lower until your chest is just above the floor.</p>
+                        <p className="text-gray-600 text-sm">3 sets of 20 reps. Sit down with your knees off the seat and your feet on the floor or toes on a platform to increase range of motion. Make your heels go as far down then push up with your calves. You can increase intensity by holding a weight on your knees.</p>
+                    </div>
+                    <div className="bg-white shadow rounded-lg p-4">
+                        <h3 className="font-bold mb-1">Single-Leg Calf Raise</h3>
+                        <p className="text-gray-600 text-sm">3 sets of 12 reps. Similar to a straight-leg calf raise, except you perform one leg at a time. This will increase the intensity and make the movement more challenging if you have limited equipment.</p>
                     </div>
                     </div>
             </section>
