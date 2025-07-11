@@ -61,4 +61,20 @@ router.patch('/password', authenticate, async (req, res) => {
   }
 });
 
+// Get leaderboard sorted by points
+router.get('/leaderboard', async (req, res) => {
+    try {
+        const topUsers = await User.find()
+            .sort({ points: -1 }) // sort descending
+            .limit(10) // top 10
+            .select('username points'); // return only username and points
+
+        res.json(topUsers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch leaderboard' });
+    }
+});
+
+
 module.exports = router;
