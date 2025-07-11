@@ -72,5 +72,14 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete cardio session' });
   }
 });
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const logs = await Cardio.find({ user: req.params.userId }).sort({ date: 1 });
+        res.json(logs);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch cardio logs' });
+    }
+});
+
 
 module.exports = router;

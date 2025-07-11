@@ -86,6 +86,7 @@ app.post("/login", async (req, resp) => {
                     message: "Login successful",
                     username: user.username,
                     email: user.email, // ✅ Added missing comma
+                    userId: user._id,
                     token: token // ✅ Now correctly defined
                 });
             } else {

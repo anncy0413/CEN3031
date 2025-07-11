@@ -32,6 +32,7 @@ function LoginPage() {
         if (res.ok) {
           setMessage('✅ Admin login successful!');
           localStorage.setItem('token', data.token);
+          localStorage.setItem('userId', data.userId);
           navigate('/dashboard');
         } else {
           setMessage(data.message || 'Admin login failed');
@@ -50,6 +51,7 @@ function LoginPage() {
 
         if (res.ok) {
             localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
           setMessage('✅ User login successful!');
           setEmail('');
           setPassword('');
