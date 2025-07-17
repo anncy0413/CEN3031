@@ -17,6 +17,7 @@ import HamstringsPage from './pages/HamstringsPage';
 import TricepsPage from './pages/TricepsPage';
 import QuadsPage from './pages/QuadsPage';
 import ShoulderPage from './pages/ShouldersPage';
+import LogoutPage from './pages/Logout';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/triceps" element={<TricepsPage />} />
         <Route path="/quads and adductors" element={<QuadsPage />} />
         <Route path="/shoulders" element={<ShoulderPage />} />
+        <Route path="/logout" element={<LogoutPage />} />
       </Routes>
     </>
   );
