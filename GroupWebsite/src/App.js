@@ -17,8 +17,13 @@ import HamstringsPage from './pages/HamstringsPage';
 import TricepsPage from './pages/TricepsPage';
 import QuadsPage from './pages/QuadsPage';
 import ShoulderPage from './pages/ShouldersPage';
+import { useAuth } from './AuthContext';
 
 function App() {
+  const { loading } = useAuth(); // ✅ Wait for auth to finish
+
+  if (loading) return null; // ✅ Prevent flashing login screen
+
   return (
     <>
       <Navbar />
@@ -46,3 +51,4 @@ function App() {
 }
 
 export default App;
+
