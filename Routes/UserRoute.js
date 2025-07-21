@@ -75,6 +75,22 @@ router.get('/leaderboard', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch leaderboard' });
     }
 });
+// PATCH /users/reset/:id
+router.patch('/reset/:id', authenticate, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Only admins can perform this action.' });
+  }
+
+  try {
+    const userId = req.params.id;
+    const user = await User.findByIdAndUpdate(userId, { points: 0 }, { new: true });
+    res.json({ message: 'Points reset successfully', user });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to reset points' });
+  }
+});
+
+
 
 
 module.exports = router;

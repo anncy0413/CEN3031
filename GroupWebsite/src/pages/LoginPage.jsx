@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 function LoginPage() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -8,6 +9,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,30 +19,25 @@ function LoginPage() {
     e.preventDefault();
 
     if (isAdmin) {
-      try {
-        const res = await fetch('http://localhost:5050/api/auth/admin-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: form.username,
-            code: form.code,
-            password: form.password,
-          }),
-        });
-        const data = await res.json();
+       const adminCode = form.code.trim();
 
-        if (res.ok) {
-          setMessage('✅ Admin login successful!');
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('userId', data.userId);
-          navigate('/dashboard');
-        } else {
-          setMessage(data.message || 'Admin login failed');
-        }
-      } catch (err) {
-        setMessage('Admin login failed');
-      }
-    } else {
+  if (adminCode === 'CEN3031') {
+    const adminData = {
+      username: 'admin',
+      role: 'admin',
+      token: 'admin-token', // ✅ fake token used in backend
+    };
+
+    login(adminData); // ✅ Save to context
+    localStorage.setItem('token', 'admin-token'); // ✅ Store it for axios
+    setMessage('✅ Admin login successful!');
+    navigate('/leaderboard');
+  ``} 
+  else {
+    setMessage('❌ Invalid admin code.');
+  ``}
+    } 
+      else {
       try {
         const res = await fetch('http://localhost:5050/login', {
           method: 'POST',
@@ -50,12 +47,18 @@ function LoginPage() {
         const data = await res.json();
 
         if (res.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
-          setMessage('✅ User login successful!');
-          setEmail('');
-          setPassword('');
-          navigate('/dashboard');
+            const userData = {
+            email: data.email,
+            username: data.username,
+            userId: data.userId,
+            token: data.token
+            };
+
+            login(userData); // ✅ Save to AuthContext + localStorage
+            setMessage('✅ User login successful!');
+            setEmail('');
+            setPassword('');
+            navigate('/dashboard'); // ✅ Navigate to protected page
         } else {
           if (data.error === "User doesn't exist") {
             setMessage('❌ User does not exist.');
@@ -95,35 +98,15 @@ function LoginPage() {
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {isAdmin ? (
-            <>
-              <input
-                type="text"
-                name="username"
-                placeholder="Admin Username"
-                value={form.username}
-                onChange={handleChange}
-                required
-                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
-              />
-              <input
-                type="text"
-                name="code"
-                placeholder="Admin Code"
-                value={form.code}
-                onChange={handleChange}
-                required
-                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
-              />
-            </>
+             <input
+              type="text"
+               name="code"
+               placeholder="Admin Code"
+               value={form.code}
+               onChange={handleChange}
+              required
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+  />
           ) : (
             <>
               <input
