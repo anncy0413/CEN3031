@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function RegisterPage() {
+const navigate = useNavigate();
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -48,7 +51,9 @@ function RegisterPage() {
         setEmail("");
         setUsername("");
         setPassword("");
+        setForm({ username: '', email: '', password: '', confirmPassword: '' });
         setMessage('Registration Successful');
+        navigate("/login");
       }
       else{
         setMessage('Duplicate email and/or username');

@@ -18,6 +18,7 @@ import TricepsPage from './pages/TricepsPage';
 import QuadsPage from './pages/QuadsPage';
 import ShoulderPage from './pages/ShouldersPage';
 import ProfilePage from './pages/Profile';
+import ToolPage from './pages/Tool';
 import { useAuth } from './AuthContext';
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
@@ -47,6 +48,8 @@ function App() {
         <Route path="/quads and adductors" element={<QuadsPage />} />
         <Route path="/shoulders" element={<ShoulderPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/tool" element={<ToolPage />} />
+
       </Routes>
     </>
   );

@@ -16,8 +16,14 @@ const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email:    { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  points:   { type: Number, default: 0 }, // ✅ for gamification and leaderboard
-  workoutHistory: [workoutEntrySchema]    // ✅ store all logged workouts for each user
+  points:   { type: Number, default: 0 }, // for gamification and leaderboard
+  workoutHistory: [workoutEntrySchema],    // store all logged workouts for each user
+    currentWeight: { type: Number, default: null },     // in kg
+    goalWeight:  { type: Number, default: null },     // in kg
+    trainingGoal:   { type: String, default: "" },       // "muscle gain", "fat loss", "maintenance"
+    calorieTarget:   { type: Number, default: null }    // daily kcal
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', UserSchema);
