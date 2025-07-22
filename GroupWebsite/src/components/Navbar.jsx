@@ -31,12 +31,13 @@ function Navbar() {
             <Link to="/register">Register</Link>
           </>
         ) : (
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
+          <Link to="/profile">Profile</Link>
+          // <button
+          //   onClick={handleLogout}
+          //   className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition"
+          // >
+          //   Logout
+          // </button>
         )}
       </div>
     </nav>

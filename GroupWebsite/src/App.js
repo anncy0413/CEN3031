@@ -17,6 +17,7 @@ import HamstringsPage from './pages/HamstringsPage';
 import TricepsPage from './pages/TricepsPage';
 import QuadsPage from './pages/QuadsPage';
 import ShoulderPage from './pages/ShouldersPage';
+import ProfilePage from './pages/Profile';
 import { useAuth } from './AuthContext';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/triceps" element={<TricepsPage />} />
         <Route path="/quads and adductors" element={<QuadsPage />} />
         <Route path="/shoulders" element={<ShoulderPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </>
   );
