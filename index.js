@@ -100,7 +100,24 @@ app.post("/login", async (req, resp) => {
     }
 });
 
-
+//deleting account
+app.delete('/profile', authenticate, async (req, res) => {
+    try{
+        //const User = require('./Models/Users.js');
+        //const { username } = req.body;
+        User.findByIdAndDelete('687edd453a9305218d638e9b'); //WHY DOESNT THIS WORK
+        console.log("id to delete:");
+        console.log(req.user.userId);
+        res.json({message: "deletion worked"})
+    }
+    catch (error){
+        console.log("username failed to delete:")
+        console.log(req.user.userId);
+        res.status(500).json({ error: error.message });
+    }
+    
+    //deleteall for that user's workout logs? add later
+});
 
 //my section end===================
 // POST /cardio
