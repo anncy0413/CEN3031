@@ -34,13 +34,12 @@ function Leaderboard() {
 
 
       setUsers((prev) =>
-        prev.map((u) => (u._id === userId ? { ...u, points: 0 } : u))
-      setUsers((prev) =>
         prev.map((u) =>
-          u._id === userId ? { ...u, points: 0 } : u
-        )
-
+        u._id === userId ? { ...u, points: 0 } : u
+      )
       );
+
+
     } catch (err) {
       console.error('Failed to reset user points:', err);
       alert('Reset failed. Only admins can perform this action.');
