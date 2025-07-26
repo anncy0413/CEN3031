@@ -20,7 +20,7 @@ function Navbar() {
           <Link to="/workout">Workout</Link>
           <Link to="/progress">Progress</Link>
           <Link to="/leaderboard">Leaderboard</Link>
-        <Link to="/tool">Tool</Link>
+          <Link to="/tool">Tools</Link>
         </>
       )}
 
