@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
+
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from 'recharts';
@@ -8,6 +9,7 @@ import {
 function Leaderboard() {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
+
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -21,6 +23,7 @@ function Leaderboard() {
     fetchLeaderboard();
   }, []);
 
+
   const resetPoints = async (userId) => {
     try {
       await axios.patch(`http://localhost:5050/users/reset/${userId}`, {}, {
@@ -29,8 +32,14 @@ function Leaderboard() {
         }
       });
 
+
       setUsers((prev) =>
         prev.map((u) => (u._id === userId ? { ...u, points: 0 } : u))
+      setUsers((prev) =>
+        prev.map((u) =>
+          u._id === userId ? { ...u, points: 0 } : u
+        )
+
       );
     } catch (err) {
       console.error('Failed to reset user points:', err);
@@ -38,12 +47,14 @@ function Leaderboard() {
     }
   };
 
+
   const getMedal = (index) => {
     if (index === 0) return '🥇';
     if (index === 1) return '🥈';
     if (index === 2) return '🥉';
     return `#${index + 1}`;
   };
+
 
   const top5 = users.slice(0, 5);
 
@@ -88,3 +99,6 @@ function Leaderboard() {
 }
 
 export default Leaderboard;
+
+
+

@@ -1,23 +1,29 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'yourSecretKey'; 
+const JWT_SECRET = 'yourSecretKey';
 
 function authenticate(req, res, next) {
-const authHeader = req.header('Authorization');
-const token = authHeader && authHeader.split(' ')[1];
-
+  const authHeader = req.header('Authorization');
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ error: 'No token provided' }); // Step 2: Block if no token
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  // ✅ Allow admin-token shortcut
+  if (token === 'admin-token') {
+    req.user = { role: 'admin' };  // ✅ tag this as admin
+    return next();
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET); // Step 3: Decode the token
-    req.user = { userId: decoded.userId };
-
-    next(); // Step 5: Allow request to continue
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = { userId: decoded.userId, role: 'user' };  // tag regular user
+    next();
   } catch (err) {
-    res.status(401).json({ error: 'Invalid token' }); // Step 6: Block if token is invalid
+    res.status(401).json({ error: 'Invalid token' });
   }
 }
 
 module.exports = authenticate;
+
+

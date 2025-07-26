@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function RegisterPage() {
+const navigate = useNavigate();
   const [form, setForm] = useState({
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+  
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -17,22 +25,48 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.password !== form.confirmPassword) {
-      setMessage('❌ Passwords do not match');
+    if (password !== form.confirmPassword) {
+      setMessage('Passwords do not match');
       return;
     }
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
-        username: form.username,
-        email: form.email,
-        password: form.password,
-      });
-      setMessage(`✅ ${res.data.message || 'Registration successful!'}`);
-      setForm({ username: '', email: '', password: '', confirmPassword: '' });
-    } catch (err) {
-      setMessage(`❌ ${err.response?.data?.message || 'Registration failed'}`);
+//==================================================================
+
+    try{
+    let result = await fetch(
+      'http://localhost:5050/register',{ //http://localhost:5050/api/auth/register
+        method: "post",
+        body: JSON.stringify({username, email, password}),
+        headers: {
+          'Content-Type':'application/json'
+        }
+      }
+    )
+
+    result = await result.json();
+    console.warn(result);
+    if(result){
+      if(result.message != "Something went wrong?"){
+        alert("Data saved successfully");
+        setEmail("");
+        setUsername("");
+        setPassword("");
+        setForm({ username: '', email: '', password: '', confirmPassword: '' });
+        setMessage('Registration Successful');
+        navigate("/login");
+      }
+      else{
+        setMessage('Duplicate email and/or username');
+      }
     }
+    else{
+      setMessage('Registration failed');
+    }} catch (err) {
+      setMessage('Registration failed :(')
+    }
+  
+    //===================================================
+
   };
 
   return (
@@ -44,8 +78,10 @@ function RegisterPage() {
             className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             name="username"
             placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
+            // value={form.username}
+            // onChange={handleChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
           <input
@@ -53,8 +89,10 @@ function RegisterPage() {
             type="email"
             name="email"
             placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
+            // value={form.email}
+            // onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
@@ -62,8 +100,10 @@ function RegisterPage() {
             type="password"
             name="password"
             placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
+            // value={form.password}
+            // onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <input

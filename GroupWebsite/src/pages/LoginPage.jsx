@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 function LoginPage() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-    username: '',
-    code: ''
-  });
+  const [form, setForm] = useState({ email: '', password: '', username: '', code: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,39 +18,68 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      if (isAdmin) {
-        const res = await axios.post('http://localhost:5000/api/auth/admin-login', {
-          username: form.username,
-          code: form.code,
-          password: form.password,
+    if (isAdmin) {
+       const adminCode = form.code.trim();
+
+  if (adminCode === 'CEN3031') {
+    const adminData = {
+      username: 'admin',
+      role: 'admin',
+      token: 'admin-token', // ✅ fake token used in backend
+    };
+
+    login(adminData); // ✅ Save to context
+    localStorage.setItem('token', 'admin-token'); // ✅ Store it for axios
+    setMessage('✅ Admin login successful!');
+    navigate('/leaderboard');
+  ``} 
+  else {
+    setMessage('❌ Invalid admin code.');
+  ``}
+    } 
+      else {
+      try {
+        const res = await fetch('http://localhost:5050/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
         });
-        setMessage('✅ Admin login successful!');
-        localStorage.setItem('token', res.data.token);
-        navigate('/dashboard');
-      } else {
-        const res = await axios.post('http://localhost:5000/api/auth/login', {
-          email: form.email,
-          password: form.password,
-        });
-        setMessage('✅ User login successful!');
-        localStorage.setItem('token', res.data.token);
-        navigate('/dashboard');
+        const data = await res.json();
+
+        if (res.ok) {
+            const userData = {
+            email: data.email,
+            username: data.username,
+            userId: data.userId,
+            token: data.token
+            };
+
+            login(userData); // ✅ Save to AuthContext + localStorage
+            setMessage('✅ User login successful!');
+            setEmail('');
+            setPassword('');
+            navigate('/dashboard'); // ✅ Navigate to protected page
+        } else {
+          if (data.error === "User doesn't exist") {
+            setMessage('❌ User does not exist.');
+          } else if (data.error === "Password doesn't match") {
+            setMessage('❌ Incorrect password.');
+          } else {
+            setMessage('❌ Login failed.');
+          }
+        }
+      } catch (err) {
+        setMessage('❌ Network error during login.');
       }
-    } catch (err) {
-      setMessage(`❌ ${err.response?.data?.message || 'Login failed'}`);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4">
-
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
           {isAdmin ? "Admin Login" : "User Login"}
         </h2>
-
-        {/* Toggle User/Admin */}
         <div className="flex justify-center mb-4">
           <button
             type="button"
@@ -71,74 +96,49 @@ function LoginPage() {
             Admin
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {isAdmin ? (
-            <>
-              <input
-                className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="text"
-                name="username"
-                placeholder="Admin Username"
-                value={form.username}
-                onChange={handleChange}
-                required
-              />
-              <input
-                className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="text"
-                name="code"
-                placeholder="Admin Code"
-                value={form.code}
-                onChange={handleChange}
-                required
-              />
-              <input
-                className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
-            </>
+             <input
+              type="text"
+               name="code"
+               placeholder="Admin Code"
+               value={form.code}
+               onChange={handleChange}
+              required
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+  />
           ) : (
             <>
               <input
-                className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 type="email"
                 name="email"
                 placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
+                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
               />
               <input
-                className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 type="password"
                 name="password"
                 placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
+                className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
               />
             </>
           )}
           <button
             type="submit"
-            className="bg-gradient-to-r from-blue-500 to-blue-500 text-white py-3 rounded-lg hover:from-blue-600 hover:to-blue-600 transition font-semibold shadow"
+            className="bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-semibold shadow"
           >
             {isAdmin ? "Login as Admin" : "Login as User"}
           </button>
-          {message && (
-            <p className="text-center text-sm mt-2">{message}</p>
-          )}
+          {message && <p className="text-center text-sm mt-2">{message}</p>}
           <p className="text-center text-sm mt-4 text-gray-600">
             Need to sign up?{' '}
-            <Link to="/register" className="text-blue-600 hover:underline">
-              Register here.
-            </Link>
+            <Link to="/register" className="text-blue-600 hover:underline">Register here.</Link>
           </p>
         </form>
       </div>
