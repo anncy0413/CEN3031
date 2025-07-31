@@ -10,6 +10,7 @@ function LoginPage() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,6 +20,7 @@ function LoginPage() {
     e.preventDefault();
 
     if (isAdmin) {
+      logout();
        const adminCode = form.code.trim();
 
   if (adminCode === 'CEN3031') {
