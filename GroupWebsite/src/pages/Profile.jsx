@@ -69,6 +69,12 @@ function ProfilePage() {
   // Delete Account
     const handleSubmitDelete = async (e) => {
       e.preventDefault();
+
+      if(token == 'admin-token'){
+        alert("Could not delete account");
+        return;
+      }
+
       try {
         const res = await fetch('http://localhost:5050/users/me', {
           method: "DELETE",
