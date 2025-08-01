@@ -6,6 +6,7 @@ function WorkoutTracker() {
   const [selectedType, setSelectedType] = useState(null);
   const [duration, setDuration] = useState('');
   const [exercises, setExercises] = useState([{ name: '', sets: '', reps: '', weight: '' }]);
+  const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -22,6 +23,11 @@ function WorkoutTracker() {
   const handleCardioSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+
+    if(token == 'admin-token'){
+      setMessage('Please switch to user account');
+      return
+    }
 
     try {
     const token = localStorage.getItem('token');
@@ -56,6 +62,11 @@ function WorkoutTracker() {
   const handleWeightliftingSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+
+    if(token == 'admin-token'){
+      setMessage('Please switch to user account');
+      return
+    }
 
     try {
     const token = localStorage.getItem('token');
@@ -123,6 +134,7 @@ function WorkoutTracker() {
             <button type="submit" className="bg-blue-600 text-white py-2 rounded-lg">
               Submit Cardio Workout
             </button>
+            {message && <p className="text-center text-sm mt-2">{message}</p>}
           </form>
         )}
 
@@ -172,6 +184,7 @@ function WorkoutTracker() {
             <button type="submit" className="bg-blue-600 text-white py-2 rounded-lg">
               Submit Weightlifting Workout
             </button>
+            {message && <p className="text-center text-sm mt-2">{message}</p>}
           </form>
         )}
 
