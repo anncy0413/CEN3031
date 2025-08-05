@@ -22,9 +22,11 @@ import ToolPage from './pages/Tool';
 import { useAuth } from './AuthContext';
 
 function App() {
-  const { loading } = useAuth(); // ✅ Wait for auth to finish
+  const { loading } = useAuth(); // Wait for auth to finish
 
-  if (loading) return null; // ✅ Prevent flashing login screen
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
