@@ -2,7 +2,7 @@
 function QuadsPage(){
     return(
         <div className="p-8 max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">Quad Workouts</h1>
+            <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">Quadricep Workouts</h1>
 
             <section className="mb-6">
                 <h2 className="text-2xl font-semibold mb-2">Why Train Your Quads?</h2>

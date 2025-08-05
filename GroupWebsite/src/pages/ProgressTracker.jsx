@@ -12,6 +12,7 @@ import {
 function ProgressTracker() {
   const [weightData, setWeightData] = useState([]);
   const [cardioData, setCardioData] = useState([]);
+  const [selectedExercise, setSelectedExercise] = useState('');
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -22,7 +23,8 @@ function ProgressTracker() {
       .then(data => {
         const formatted = data.map(item => ({
           date: item.date.slice(0, 10),
-          weight: item.weight
+          weight: item.weight,
+          exercise: item.exercise
         }));
         setWeightData(formatted);
       })
@@ -41,15 +43,43 @@ function ProgressTracker() {
       .catch(err => console.error(err));
   }, []);
 
-  return (
-    <div className="flex flex-col items-center justify-start min-h-screen px-4 py-8 space-y-12">
-      <h1 className="text-3xl font-semibold">Progress Tracker</h1>
+  const uniqueExercises = [...new Set(weightData.map(item => item.exercise))];
 
-      {/* Weight Tracker */}
-      <div className="w-full max-w-3xl h-80">
-        <h2 className="text-xl font-semibold mb-2 text-center">Weight Progress</h2>
+  const filteredWeightData = selectedExercise
+    ? weightData.filter(item => item.exercise === selectedExercise)
+    : [];
+
+  return (
+  <div className="flex flex-col items-center justify-start min-h-screen px-4 py-8">
+    <h1 className="text-3xl font-semibold mb-8">Progress Tracker</h1>
+
+    {/* Weight Tracker */}
+    <div className="w-full max-w-3xl mb-12">
+      <h2 className="text-xl font-semibold mb-4 text-center">Weight Progress</h2>
+
+      {/* Dropdown */}
+      <div className="mb-4 flex flex-col items-center">
+        <label htmlFor="exerciseSelect" className="mb-2 font-medium">
+          Select an Exercise
+        </label>
+        <select
+          id="exerciseSelect"
+          value={selectedExercise}
+          onChange={(e) => setSelectedExercise(e.target.value)}
+          className="p-2 border border-gray-300 rounded"
+        >
+          <option value="">-- Choose an exercise --</option>
+          {uniqueExercises.map((exercise, idx) => (
+            <option key={idx} value={exercise}>
+              {exercise}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={weightData}>
+          <LineChart data={filteredWeightData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis label={{ value: 'Weight (lbs)', angle: -90, position: 'insideLeft' }} />
@@ -58,10 +88,12 @@ function ProgressTracker() {
           </LineChart>
         </ResponsiveContainer>
       </div>
+    </div>
 
-      {/* Cardio Tracker */}
-      <div className="w-full max-w-3xl h-80">
-        <h2 className="text-xl font-semibold mb-2 text-center">Cardio Time Progress</h2>
+    {/* Cardio Tracker */}
+    <div className="w-full max-w-3xl mb-12">
+      <h2 className="text-xl font-semibold mb-4 text-center">Cardio Time Progress</h2>
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={cardioData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -73,7 +105,9 @@ function ProgressTracker() {
         </ResponsiveContainer>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default ProgressTracker;

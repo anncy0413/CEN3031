@@ -201,6 +201,7 @@ function WorkoutTracker() {
       </div>
     </div>
   );
+
 }
 
 export default WorkoutTracker;
